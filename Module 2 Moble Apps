@@ -1,0 +1,17 @@
+# Navigate to your project folder
+cd path_to_your_android_project
+
+# Initialize git
+git init
+
+# Add your remote repository (replace the URL with your actual GitHub URL)
+git remote add origin https://github.com/yourusername/SimpleMobileApp.git
+
+# Add all files
+git add .
+
+# Commit your changes
+git commit -m "Initial commit for Simple Mobile App"
+
+# Push to GitHub
+git push -u origin master
