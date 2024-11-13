@@ -1,0 +1,100 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <ctime>
+#include <cstdlib>
+
+// Class to handle the Hangman game
+class HangmanGame {
+private:
+    std::string wordToGuess;
+    std::string guessedWord;
+    int attemptsLeft;
+    std::vector<char> incorrectGuesses;
+
+    // Predefined list of words
+    const std::vector<std::string> wordList = {"apple", "banana", "grape", "orange", "peach", "cherry", "melon"};
+
+    void initializeWord(const std::string &word) {
+        wordToGuess = word;
+        guessedWord = std::string(word.size(), '_');
+        attemptsLeft = 6;
+        incorrectGuesses.clear();
+    }
+
+    bool isGameWon() const {
+        return wordToGuess == guessedWord;
+    }
+
+    bool isGameOver() const {
+        return attemptsLeft <= 0;
+    }
+
+public:
+    HangmanGame() {
+        std::srand(static_cast<unsigned int>(std::time(0)));
+    }
+
+    void startGame() {
+        std::string word = wordList[std::rand() % wordList.size()];
+        initializeWord(word);
+    }
+
+    void displayState() const {
+        std::cout << "Word to guess: " << guessedWord << "\n";
+        std::cout << "Attempts left: " << attemptsLeft << "\n";
+        if (!incorrectGuesses.empty()) {
+            std::cout << "Incorrect guesses: ";
+            for (char ch : incorrectGuesses) std::cout << ch << " ";
+            std::cout << "\n";
+        }
+    }
+
+    void guess(char letter) {
+        bool found = false;
+        for (size_t i = 0; i < wordToGuess.size(); ++i) {
+            if (wordToGuess[i] == letter) {
+                guessedWord[i] = letter;
+                found = true;
+            }
+        }
+        if (!found) {
+            incorrectGuesses.push_back(letter);
+            --attemptsLeft;
+        }
+    }
+
+    bool isWon() const {
+        return isGameWon();
+    }
+
+    bool isLost() const {
+        return isGameOver();
+    }
+
+    // Public getter function to retrieve the wordToGuess
+    std::string getWordToGuess() const {
+        return wordToGuess;
+    }
+};
+
+int main() {
+    HangmanGame game;
+    game.startGame();
+
+    while (!game.isWon() && !game.isLost()) {
+        game.displayState();
+        std::cout << "Enter a letter: ";
+        char guess;
+        std::cin >> guess;
+        game.guess(guess);
+    }
+
+    if (game.isWon()) {
+        std::cout << "Congratulations! You've guessed the word.\n";
+    } else {
+        std::cout << "Game over. The word was: " << game.getWordToGuess() << "\n";
+    }
+
+    return 0;
+}
